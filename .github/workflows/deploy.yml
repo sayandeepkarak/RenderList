@@ -4,14 +4,6 @@ on:
   push:
     branches:
       - main # Trigger deployment on push to 'main' branch
-  pull_request:
-    branches:
-      - main # Optionally, deploy on PR to 'main'
-
-permissions:
-  contents: read # Required for accessing the codebase
-  actions: write # Allows creating GitHub Actions comments
-  deployments: write # Required to push to Firebase
 
 jobs:
   build_and_deploy:
@@ -22,21 +14,21 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      # Step 2: Set up Node.js (version 18)
+      # Step 2: Set up Node.js (version 18 or required version)
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: "18" # Updated to version 18
+          node-version: "18" # Update this if your project requires a different version
 
       # Step 3: Install dependencies using Yarn
       - name: Install dependencies
         run: yarn install
 
-      # Step 4: Build the project using Yarn
+      # Step 4: Build the project
       - name: Build project
         run: yarn build
 
-      # Step 5: Deploy to Firebase Hosting
+      # Step 5: Deploy to Firebase Hosting with debugging enabled
       - name: Deploy to Firebase Hosting
         uses: FirebaseExtended/action-hosting-deploy@v0
         with:
@@ -44,3 +36,4 @@ jobs:
           firebaseServiceAccount: "${{ secrets.FIREBASE_SERVICE_ACCOUNT_RENDERLIST_4C2C4 }}" # Firebase service account key
           projectId: "renderlist-4c2c4" # Replace with your Firebase project ID
           channelId: live # You can change this to preview for staging, etc.
+          debug: true # Enable debug to get more detailed error messages
